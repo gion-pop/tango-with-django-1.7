@@ -3,6 +3,7 @@ from rango.models import (
     Category,
     Page,
 )
+from rango.forms import CategoryForm
 
 
 def index(req):
@@ -34,3 +35,19 @@ def category(req, category_name_slug):
         pass
 
     return render(req, 'rango/category.html', ctx_dict)
+
+
+def add_category(req):
+    if req.method == 'POST':
+        form = CategoryForm(req.POST)
+
+        if form.is_valid():
+            form.save(commit=True)
+            return index(req)
+        else:
+            print(form.errors)
+
+    else:
+        form = CategoryForm()
+
+    ctx_dict = {'form': form}
