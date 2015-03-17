@@ -11,7 +11,11 @@ from rango.models import (
 
 
 def populate():
-    python_cat = add_cat('Python')
+    python_cat = add_cat(
+        name='Python',
+        views=128,
+        likes=64
+    )
 
     add_page(
         cat=python_cat,
@@ -31,7 +35,11 @@ def populate():
         url='http://www.korokithakis.net/tutorials/python/'
     )
 
-    django_cat = add_cat('Django')
+    django_cat = add_cat(
+        name='Django',
+        views=64,
+        likes=32
+    )
 
     add_page(
         cat=django_cat,
@@ -51,7 +59,11 @@ def populate():
         url='http://www.tangowithdjango.com/'
     )
 
-    frame_cat = add_cat('Other Frameworks')
+    frame_cat = add_cat(
+        name='Other Frameworks',
+        views=32,
+        likes=16
+    )
 
     add_page(
         cat=frame_cat,
@@ -79,8 +91,10 @@ def add_page(cat, title, url, views=0):
     return p
 
 
-def add_cat(name):
+def add_cat(name, views=0, likes=0):
     c = Category.objects.get_or_create(name=name)[0]
+    c.views = views
+    c.likes = likes
     c.save()
     return c
 
