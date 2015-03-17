@@ -7,7 +7,12 @@ from rango.models import (
 
 def index(req):
     category_list = Category.objects.order_by('-likes')[:5]
-    ctx_dict = {'categories': category_list}
+    most_viewed_pages = Page.objects.order_by('-views')[:5]
+    ctx_dict = {
+        'categories': category_list,
+        'most_viewed_pages': most_viewed_pages,
+    }
+
     return render(req, 'rango/index.html', ctx_dict)
 
 
