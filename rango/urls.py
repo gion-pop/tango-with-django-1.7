@@ -3,6 +3,7 @@ from django.conf.urls import (
     url,
 )
 from rango import views
+from django.conf import settings
 
 
 urlpatterns = patterns(
