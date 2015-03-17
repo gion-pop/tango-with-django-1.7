@@ -3,7 +3,10 @@ from rango.models import (
     Category,
     Page,
 )
-from rango.forms import CategoryForm
+from rango.forms import (
+    CategoryForm,
+    PageForm
+)
 
 
 def index(req):
@@ -51,3 +54,32 @@ def add_category(req):
         form = CategoryForm()
 
     ctx_dict = {'form': form}
+    return render(req, 'rango/add_category.html', ctx_dict)
+
+
+def add_page(req, category_name_slug):
+    try:
+        requested_category = Category.objects.get(slug=category_name_slug)
+    except Category.DoesNotExist:
+        cat = None
+
+    if req.method == 'POST':
+        form = PageForm(req.POST)
+
+        if requested_category and form.is_valid():
+            page = form.save(commit=False)
+            page.category = requested_category
+            page.views = 0
+            page.save()
+            return category(req, category_name_slug)
+        else:
+            print(form.errors)
+
+    else:
+        form = PageForm()
+
+    ctx_dict = {
+        'form': form,
+        'category': requested_category,
+    }
+    return render(req, 'rango/add_page.html', ctx_dict)
