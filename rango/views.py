@@ -55,7 +55,9 @@ def index(req):
 
 
 def about(req):
-    return render(req, 'rango/about.html')
+    visits = int(req.COOKIES.get('visits', 1))
+    ctx_dict = {'visits': visits}
+    return render(req, 'rango/about.html', ctx_dict)
 
 
 def category(req, category_name_slug):
