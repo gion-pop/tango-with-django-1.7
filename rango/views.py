@@ -123,68 +123,6 @@ def add_page(req, category_name_slug):
     return render(req, 'rango/add_page.html', ctx_dict)
 
 
-def register(req):
-    registered = False
-
-    if req.method == 'POST':
-        user_form = UserForm(data=req.POST)
-        profile_form = UserProfileForm(data=req.POST)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
-            user.set_password(user.password)
-            user.save()
-
-            profile = profile_form.save(commit=False)
-            profile.user = user
-
-            if 'picture' in req.FILES:
-                profile.picture = req.FILES['picture']
-
-            profile.save()
-            registered = True
-
-        else:
-            print(user_form.errors, profile_form.errors)
-
-    else:
-        user_form = UserForm()
-        profile_form = UserProfileForm()
-
-    ctx_dict = {
-        'user_form': user_form,
-        'profile_form': profile_form,
-        'registered': registered,
-    }
-    return render(req, 'rango/register.html', ctx_dict)
-
-
-def user_login(req):
-    if req.method == 'POST':
-        username = req.POST.get('username')
-        password = req.POST.get('password')
-
-        user = authenticate(username=username, password=password)
-
-        if user:
-            if user.is_active:
-                login(req, user)
-                return HttpResponseRedirect('/rango/')
-            else:
-                return HttpResponse('Your Rango account is disabled.')
-        else:
-            print('Invalid login details: {}, {}'.format(username, password))
-
-    else:
-        return render(req, 'rango/login.html', {})
-
-
 @login_required
 def restricted(req):
     return render(req, 'rango/restricted.html', {})
-
-
-@login_required
-def user_logout(req):
-    logout(req)
-    return HttpResponseRedirect('/rango/')
