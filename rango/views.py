@@ -20,6 +20,8 @@ from django.http import (
 )
 from django.contrib.auth.decorators import login_required
 
+from datetime import datetime
+
 
 def index(req):
     category_list = Category.objects.order_by('-likes')[:5]
@@ -28,6 +30,26 @@ def index(req):
         'categories': category_list,
         'most_viewed_pages': most_viewed_pages,
     }
+
+    visits = int(req.COOKIES.get('visits', 1))
+    reset_last_visit_time = False
+
+    last_visit = req.session.get('last_visit')
+    if last_visit:
+        last_visit_time = datetime.strptime(last_visit[:-7], '%Y-%m-%d %H:%M:%S')
+
+        if (datetime.now() - last_visit_time).days > 0:
+            visits += 1
+            reset_last_visit_time = True
+
+    else:
+        reset_last_visit_time = True
+
+    if reset_last_visit_time:
+        req.session['last_visit'] = str(datetime.now())
+        req.session['visits'] = visits
+
+    ctx_dict['visits'] = visits
 
     return render(req, 'rango/index.html', ctx_dict)
 
