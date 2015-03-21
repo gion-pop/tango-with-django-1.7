@@ -1,26 +1,51 @@
 {% extends 'rango/base.html' %}
 
+{% block title %}Index{% endblock %}
+
 {% block body_block %}
-    <h1>Rango says...hello world!</h1>
-
-    <h2>Categories</h2>
-    {% if categories %}
-        <ul>
-            {% for category in categories %}
-            <li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
-            {% endfor %}
-        </ul>
+  <div class="page-header">
+    {% if user.is_authenticated %}
+      <h1>Rango says... hello {{ user.username }}!</h1>
     {% else %}
-        <strong>There are no categories present.</strong>
+      <h1>Rango says... hello world!</h1>
     {% endif %}
+  </div>
 
-    <h2>Most viewed pages</h2>
-    {% if most_viewed_pages %}
-        <ul>
-            {% for page in most_viewed_pages %}
-            <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+  <div class="row placeholders">
+    <div class="col-xs-12 col-sm-6 placeholder">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h2>Categories</h2>
+        </div>
+
+        {% if categories %}
+          <ul class="list-group">
+            {% for category in categories %}
+              <li class="list-group-item"><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
             {% endfor %}
-        </ul>
-    {% endif %}
-    <p>visits: {{ visits }}</p>
+          </ul>
+        {% else %}
+          <strong>There are no categories present.</strong>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 placeholder">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h2>Pages</h2>
+        </div>
+
+        {% if most_viewed_pages %}
+          <ul class="list-group">
+            {% for page in most_viewed_pages %}
+              <li class="list-group-item"><a href="{{ page.url }}">{{ page.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <p>visits: {{ visits }}</p>
 {% endblock %}
